@@ -8,9 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace XMLFormApp
 {
+    public class Person
+    {
+        public int Age { get; set; }
+        public string Name { get; set; }
+        public string Company { get; set; }
+    }
+
     public partial class MainForm : Form
     {
         public MainForm()
@@ -38,12 +46,29 @@ namespace XMLFormApp
             personElem.AppendChild(ageElem);
             xRoot?.AppendChild(personElem);
             xDoc.Save("XMLFile1.xml");
-
+        }
+        public void GetAll()
+        {
+            XDocument xDoc = XDocument.Load("XMLFile1.xml");
+            var persons = xDoc.Element("persons")
+                .Elements("person")
+                .Select(p => new Person
+                {
+                    Age = int.Parse(p.Element("age").Value.ToString()),
+                    Name = p.Element("name").Value.ToString(),
+                    Company = p.Element("company").Value.ToString()
+                });
+            XMLView.DataSource = persons.ToList();
+        }
+        public void Delete1()
+        {
+            XDocument xDoc = XDocument.Load("XMLFile1.xml");
+            xDoc.Remove();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void XMLView_Load(object sender, EventArgs e)
         {
-
+            GetAll();
         }
 
         private void UpdateBtn_Click(object sender, EventArgs e)
@@ -59,6 +84,8 @@ namespace XMLFormApp
         private void CrateBtn_Click(object sender, EventArgs e)
         {
             CreatePerson();
+            XMLView.DataSource = null;
+            GetAll();
         }
 
         private void XMLView_CellContentClick(object sender, DataGridViewCellEventArgs e)

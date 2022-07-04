@@ -108,7 +108,7 @@
             this.Controls.Add(this.XMLView);
             this.Name = "MainForm";
             this.Text = "MainForm";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.XMLView_Load);
             ((System.ComponentModel.ISupportInitialize)(this.XMLView)).EndInit();
             this.ResumeLayout(false);
 
